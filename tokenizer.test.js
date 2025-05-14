@@ -1,5 +1,6 @@
+// tokenizer.test.js
 import { tokenize } from "./sintez.js";
-import { assertEquals, fail } from "jsr:@std/assert";
+import { assertEquals } from "jsr:@std/assert";
 
 const atom = (name) => Symbol.for(name);
 
@@ -40,8 +41,8 @@ Deno.test("Tokenizer", async (t) => {
     name: "tokenize Shvi code",
     fn: () => {
       const result = tokenize("tone 261.63 1000");
-
-      fail("Write down the correct assertion and make it pass");
+      assertEquals(result, [atom("tone"), 261.63, 1000]);
     },
   });
 });
+
