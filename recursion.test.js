@@ -4,12 +4,10 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "find the nth Fibonacci number",
     fn: () => {
-      // If n is 0, return 0
-      // If n is 1, return 1
-      // Otherwise, return the sum of the previous two Fibonacci numbers
-
       const fibonacci = (n) => {
-        throw new Error("Not implemented");
+        if (n === 0) return 0;
+        if (n === 1) return 1;
+        return fibonacci(n - 1) + fibonacci(n - 2);
       };
 
       const generalResult = fibonacci(5);
@@ -24,6 +22,7 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "reverse capitalize a string",
     fn: () => {
+      
       // If the string is empty, return an empty string
       // If the first character is uppercase
       //  make it lowercase and add it to the result
@@ -39,10 +38,12 @@ Deno.test("Recursion", async (t) => {
           }
           const [first, ...rest] = str;
 
-          fail(
-            "You need to implement the logic to reverse the capitalization",
-          );
-        };
+        const flipped 
+          first === first.toUpperCase()
+          ? first.toLowerCase()
+          : first.toUpperCase()
+          return loop(str.slice(1), acc + flipped);
+};
 
         return loop(str, "");
       };
@@ -64,8 +65,7 @@ Deno.test("Recursion", async (t) => {
       // When all the elements are checked, return the maximum value
 
       const max = (numbers) => {
-        throw new Error("Not implemented");
-      };
+        if arr
 
       const maxOfEmptyList = max([]);
       const maxOfSingletonList = max([2]);
