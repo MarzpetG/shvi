@@ -23,13 +23,6 @@ Deno.test("Recursion", async (t) => {
     name: "reverse capitalize a string",
     fn: () => {
       
-      // If the string is empty, return an empty string
-      // If the first character is uppercase
-      //  make it lowercase and add it to the result
-      // If the first character is lowercase
-      //  make it uppercase and add it to the result
-      // Move to the next character and repeat the process
-      // When all the characters are checked, return the result
 
       const reverseCapitalize = (str) => {
         const loop = (str, acc) => {
@@ -38,7 +31,7 @@ Deno.test("Recursion", async (t) => {
           }
           const [first, ...rest] = str;
 
-        const flipped 
+        const flipped =
           first === first.toUpperCase()
           ? first.toLowerCase()
           : first.toUpperCase()
@@ -58,14 +51,15 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "find the maximum value in a list",
     fn: () => {
-      // If the list is empty, return -Infinity
-      // Assume the first element in the list is the maximum
-      //  and compare it with the rest of the elements
-      // Once the current max is smaller than the next element, replace it with the latter
-      // When all the elements are checked, return the maximum value
-
+      
       const max = (numbers) => {
-        if arr
+  if (numbers.length === 0) return -Infinity;
+  if (numbers.length === 1) return numbers[0];
+
+  const [first, ...rest] = numbers;
+  const maxOfRest = max(rest);
+  return first > maxOfRest ? first : maxOfRest;
+};
 
       const maxOfEmptyList = max([]);
       const maxOfSingletonList = max([2]);
@@ -80,6 +74,7 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "remove substrings from a string",
     fn: () => {
+      
       // If the substring or the string are empty, return the string
       // Move through the characters two by two
       // If the first character is not the first character of the substring
@@ -90,7 +85,7 @@ Deno.test("Recursion", async (t) => {
       //  If it is not, add the first character to the result and move to the next character of the string
 
       const strip = (str, substr) => {
-        throw new Error("Not implemented");
+        
       };
 
       const generalResult = strip("Skies are grey in Greece", "re");
