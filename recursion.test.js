@@ -22,8 +22,6 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "reverse capitalize a string",
     fn: () => {
-      
-
       const reverseCapitalize = (str) => {
         const loop = (str, acc) => {
           if (str.length === 0) {
@@ -31,12 +29,11 @@ Deno.test("Recursion", async (t) => {
           }
           const [first, ...rest] = str;
 
-        const flipped =
-          first === first.toUpperCase()
-          ? first.toLowerCase()
-          : first.toUpperCase()
+          const flipped = first === first.toUpperCase()
+            ? first.toLowerCase()
+            : first.toUpperCase();
           return loop(str.slice(1), acc + flipped);
-};
+        };
 
         return loop(str, "");
       };
@@ -51,15 +48,14 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "find the maximum value in a list",
     fn: () => {
-      
       const max = (numbers) => {
-  if (numbers.length === 0) return -Infinity;
-  if (numbers.length === 1) return numbers[0];
+        if (numbers.length === 0) return -Infinity;
+        if (numbers.length === 1) return numbers[0];
 
-  const [first, ...rest] = numbers;
-  const maxOfRest = max(rest);
-  return first > maxOfRest ? first : maxOfRest;
-};
+        const [first, ...rest] = numbers;
+        const maxOfRest = max(rest);
+        return first > maxOfRest ? first : maxOfRest;
+      };
 
       const maxOfEmptyList = max([]);
       const maxOfSingletonList = max([2]);
@@ -74,7 +70,6 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "remove substrings from a string",
     fn: () => {
-      
       // If the substring or the string are empty, return the string
       // Move through the characters two by two
       // If the first character is not the first character of the substring
@@ -85,14 +80,15 @@ Deno.test("Recursion", async (t) => {
       //  If it is not, add the first character to the result and move to the next character of the string
 
       const strip = (str, substr) => {
-        
+      if(substr === "" || str === "") return str;
+      return str.split(substr).join("")
       };
 
       const generalResult = strip("Skies are grey in Greece", "re");
       const emptyStringResult = strip("", "re");
       const emptySubstringResult = strip("Skies are grey in Greece", "");
       assertEquals(generalResult, "Skies a gy in Gece");
-      assertEquals(emptySubstringResult, "Skies a gy in Gece");
+      assertEquals(emptySubstringResult, "Skies are grey in Greece");
       assertEquals(emptyStringResult, "");
     },
   });
@@ -100,13 +96,14 @@ Deno.test("Recursion", async (t) => {
   await t.step({
     name: "flatten a nested array",
     fn: () => {
-      // If the array is empty, return an empty array
-      // If the first element is an array, flatten it and add it to the result
-      // If the first element is not an array, add it to the result
-      // Move to the next element and repeat the process
-
-      const flatten = (arr) => {
-        throw new Error("Not implemented");
+        const flatten = (arr) => {
+        if (arr.length === 0) return [];
+        const [first, ...rest] = arr;
+        if (Array.isArray(first)) {
+          return [...flatten(first), ...flatten(rest)];
+        } else {
+          return [first, ...flatten(rest)];
+        }
       };
 
       const generalResult = flatten([1, [2, 3], [4, [5]]]);
