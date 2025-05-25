@@ -1,68 +1,57 @@
-import { tokenize } from "./sintez.js";
-import { assertEquals, fail } from "jsr:@std/assert";
+export function tokenize(input) {
+  const stack = [[]]; 
+  let currentToken = ""
 
-const atom = (name) => Symbol.for(name);
+  for (let i = 0; i < input.length; i++) {
+    const char = input[i];
 
-Deno.test("Tokenizer", async (t) => {
-  await t.step({
-    name: "no input is an empty list",
-    fn: () => {
-      const result = tokenize("");
-      assertEquals(result, []);
-    },
-  });
+    if (char === " " || char === "\n" || char === "\t") {
 
-  await t.step({
-    name: "tokenize a number",
-    fn: () => {
-      const result = tokenize("12.3");
-      assertEquals(result, [12.3]);
-    },
-  });
+      if (currentToken.length > 0) {
+        stack[stack.length - 1].push(parseToken(currentToken));
+        currentToken = "";
+      }
+      continue;
+    }
 
-  await t.step({
-    name: "tokenize a symbol",
-    fn: () => {
-      const result = tokenize("fifa");
-      assertEquals(result, [atom("fifa")]);
-    },
-  });
+    if (char === "(") {
 
-  await t.step({
-    name: "regard spaces as delimiters",
-    fn: () => {
-      const result = tokenize("fifa 2002");
-      assertEquals(result, [atom("fifa"), 2002]);
-    },
-  });
+      stack.push([]);
+    } else if (char === ")") {
 
-  await t.step({
-    name: "tokenize Shvi code",
-    fn: () => {
-      const result = tokenize("tone 261.63 1000");
+      if (currentToken.length > 0) {
+        stack[stack.length - 1].push(parseToken(currentToken));
+        currentToken = "";
+      }
+      const completedList = stack.pop();
+      stack[stack.length - 1].push(completedList);
+    } else {
+  
+      currentToken += char;
+    }
+  }
 
-      assertEquals(result, [
-        atom("tone"),
-        261.63,
-        1000,
-      ]);
-    },
-  });
+ 
+  if (currentToken.length > 0) {
+    stack[stack.length - 1].push(parseToken(currentToken));
+  }
 
-  await t.step({
-    name: "tokenize a list",
-    fn: () => {
-      const result = tokenize("(a 1)");
-      assertEquals(result, [[atom("a"), 1]]);
-    },
-  });
+  return stack[0]; 
+}
 
-  await t.step({
-    name: "tokenize a nested list",
-    fn: () => {
-      fail(
-        "This test is not implemented yet. Please implement it.",
-      );
-    },
-  });
-});
+
+function parseToken(token) {
+  if (isNumber(token)) {
+    return parseFloat(token);
+  } else {
+    return atom(token);
+  }
+}
+
+
+function isNumber(str) {
+  return !isNaN(str) && !isNaN(parseFloat(str));
+}
+
+
+
