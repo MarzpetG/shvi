@@ -1,57 +1,67 @@
-export function tokenize(input) {
-  const stack = [[]]; 
-  let currentToken = ""
+import { tokenize } from "./sintez.js";
+import { assertEquals, fail } from "jsr:@std/assert";
 
-  for (let i = 0; i < input.length; i++) {
-    const char = input[i];
+const atom = (name) => Symbol.for(name);
 
-    if (char === " " || char === "\n" || char === "\t") {
+Deno.test("Tokenizer", async (t) => {
+  await t.step({
+    name: "no input is an empty list",
+    fn: () => {
+      const result = tokenize("");
+      assertEquals(result, []);
+    },
+  });
 
-      if (currentToken.length > 0) {
-        stack[stack.length - 1].push(parseToken(currentToken));
-        currentToken = "";
-      }
-      continue;
-    }
+  await t.step({
+    name: "tokenize a number",
+    fn: () => {
+      const result = tokenize("12.3");
+      assertEquals(result, [12.3]);
+    },
+  });
 
-    if (char === "(") {
+  await t.step({
+    name: "tokenize a symbol",
+    fn: () => {
+      const result = tokenize("fifa");
+      assertEquals(result, [atom("fifa")]);
+    },
+  });
 
-      stack.push([]);
-    } else if (char === ")") {
+  await t.step({
+    name: "regard spaces as delimiters",
+    fn: () => {
+      const result = tokenize("fifa 2002");
+      assertEquals(result, [atom("fifa"), 2002]);
+    },
+  });
 
-      if (currentToken.length > 0) {
-        stack[stack.length - 1].push(parseToken(currentToken));
-        currentToken = "";
-      }
-      const completedList = stack.pop();
-      stack[stack.length - 1].push(completedList);
-    } else {
-  
-      currentToken += char;
-    }
-  }
+  await t.step({
+    name: "tokenize Shvi code",
+    fn: () => {
+      const result = tokenize("tone 261.63 1000");
 
- 
-  if (currentToken.length > 0) {
-    stack[stack.length - 1].push(parseToken(currentToken));
-  }
+      assertEquals(result, [
+        atom("tone"),
+        261.63,
+        1000,
+      ]);
+    },
+  });
 
-  return stack[0]; 
-}
+  await t.step({
+    name: "tokenize a list",
+    fn: () => {
+      const result = tokenize("(a 1)");
+      assertEquals(result, [[atom("a"), 1]]);
+    },
+  });
 
-
-function parseToken(token) {
-  if (isNumber(token)) {
-    return parseFloat(token);
-  } else {
-    return atom(token);
-  }
-}
-
-
-function isNumber(str) {
-  return !isNaN(str) && !isNaN(parseFloat(str));
-}
-
-
-
+  await t.step({
+    name: "tokenize a nested list",
+    fn: () => {
+      const result = tokenize("(a (1 0))");
+      assertEquals(result, [[atom("a"), [1, 0]]]);
+    },
+  });
+});
